@@ -13,7 +13,7 @@ const url = dbConfig.url;
 
 const mongoClient = new MongoClient(url);
 
-const baseUrl = "http://localhost:8080/files/" // for images link so that we can later see files/:fileName
+const baseUrl = "https://fileuploades.herokuapp.com/files/" // for images link so that we can later see files/:fileName
 
 
 
