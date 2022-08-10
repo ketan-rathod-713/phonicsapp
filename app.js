@@ -13,7 +13,7 @@ app.use(express.urlencoded({ extended: true }));
 
 initRoutes(app);
 
-let port = 8080;
+let port = 8080 || process.env.PORT;
 app.listen(port, () => {
   console.log(`Running at localhost:${port}`);
 });
