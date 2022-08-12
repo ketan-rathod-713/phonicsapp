@@ -1,5 +1,6 @@
 
 const uploadFiles = (req, res)=>{
+
     res.render("index")
 }
 

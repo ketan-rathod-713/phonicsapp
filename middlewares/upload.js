@@ -17,10 +17,12 @@ var storage = new GridFsStorage({
             const filename = `${Date.now()}-myFile-${file.originalname}`;
             return filename;
           }
-      
+          
+          console.log(req.user.username) // i can get this information
+          const username = req.user.username;
           return { // let store this file as this info.
             bucketName: dbConfig.imgBucket,
-            filename: `${Date.now()}-myFile-${file.originalname}`
+            filename: `${Date.now()}-by-${username}-${file.originalname}`
           };
 
     }

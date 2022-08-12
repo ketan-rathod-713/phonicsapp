@@ -16,7 +16,7 @@ const mongoClient = new MongoClient(url);
 
 mongoClient.connect()
 
-const baseUrl = "https://fileuploades.herokuapp.com/images/" // for images link so that we can later see files/:fileName
+// const baseUrl = "https://fileuploades.herokuapp.com/images/" // for images link so that we can later see files/:fileName
 // const baseUrl = "http://localhost:8080/images/"
 
 
@@ -54,6 +54,9 @@ try{
     }
 
     let fileInfos = [];
+
+    var baseUrl = req.protocol + '://' + req.get('host') + req.originalUrl + "/";
+
     await cursor.forEach((doc) => {
       fileInfos.push({
         name: doc.filename,
@@ -82,11 +85,9 @@ const download = async (req, res)=>{
     })
 
     const downloadStream = bucket.openDownloadStreamByName(fileName);
-    const buffer = Buffer.alloc(200,"String",'utf-8')
-    console.log(buffer)
+  
     downloadStream.on("data", function(data){ // readable streams have this much methods/events fire 
         res.write(data);
-        // console.log(data)
     })
     
     downloadStream.on("end", function(){
@@ -101,4 +102,13 @@ const download = async (req, res)=>{
   }
 }
 
-module.exports = {uploadFiles: uploadFiles, getListFiles:getListFiles, download:download}
+const getUploadImages = (req, res, next)=>{
+  res.render("index")
+}
+
+module.exports = {
+  uploadFiles: uploadFiles, 
+  getListFiles: getListFiles, 
+  download: download,
+  getUploadImages: getUploadImages,
+}

@@ -9,10 +9,15 @@
 
 </head>
 <body class="m-5">
-    <h2 class="text-primary text-center mb-5">List Of Uploaded Images</h2>
+    <div style="display: flex;justify-content:space-between">
+        <h2 class="text-primary text-center mb-5">List Of Uploaded Images</h2>
+        <form action="/logout" method="post">
+            <button  class="btn btn-primary">LOG OUT</button>
+        </form> 
+    </div>
     <% files.forEach( file=>{ %>
 
-        <div class="card m-2 bg-secondary">
+        <div class="card m-4 bg-primary bg-opacity-75">
             <div class="card-body">
                 <a href=<%=file.url%> class="text-white"><%= file.name%></a>
                 
