@@ -32,7 +32,7 @@ const uploadFiles =async (req, res)=>{
       // return res.status(200).send({
       //   message: "Files have been uploaded.",
       // });
-      res.redirect("/images")
+      res.redirect("/images/")
     } catch(err){
         res.render("error",{error:err})
     }
@@ -55,7 +55,7 @@ try{
 
     let fileInfos = [];
 
-    var baseUrl = req.protocol + '://' + req.get('host') + req.originalUrl + "/";
+    var baseUrl = req.protocol + '://' + req.get('host') + req.originalUrl + "";
 
     await cursor.forEach((doc) => {
       fileInfos.push({
