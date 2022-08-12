@@ -16,8 +16,8 @@ const mongoClient = new MongoClient(url);
 
 mongoClient.connect()
 
-// const baseUrl = "https://fileuploades.herokuapp.com/images/" // for images link so that we can later see files/:fileName
-const baseUrl = "http://localhost:8080/images/"
+const baseUrl = "https://fileuploades.herokuapp.com/images/" // for images link so that we can later see files/:fileName
+// const baseUrl = "http://localhost:8080/images/"
 
 
 const uploadFiles =async (req, res)=>{
