@@ -2,6 +2,7 @@
 const upload = require("../middlewares/upload");
 const dbConfig = require("../config/db");
 const { GridFSBucket } = require("mongodb");
+const { default: mongoose } = require("mongoose");
 const MongoClient= require("mongodb").MongoClient
 const GridFsBucket = require("mongodb").GridFSBucket
 
@@ -13,17 +14,15 @@ const url = dbConfig.url;
 
 const mongoClient = new MongoClient(url);
 
-const baseUrl = "https://fileuploades.herokuapp.com/files/" // for images link so that we can later see files/:fileName
-// const baseUrl = "http://localhost:8080/files/"
+mongoClient.connect()
+
+// const baseUrl = "https://fileuploades.herokuapp.com/images/" // for images link so that we can later see files/:fileName
+const baseUrl = "http://localhost:8080/images/"
 
 
 const uploadFiles =async (req, res)=>{
   try{
-    console.log("loading...")
     await upload(req, res);
-    console.log("loaded")
-    console.log(req.files) // upload middleware returns each files new name and all that info
-
     if (req.files.length <= 0) {
         return res
           .status(400)
@@ -33,7 +32,7 @@ const uploadFiles =async (req, res)=>{
       // return res.status(200).send({
       //   message: "Files have been uploaded.",
       // });
-      res.redirect("/files")
+      res.redirect("/images")
     } catch(err){
         res.render("error",{error:err})
     }
@@ -64,7 +63,8 @@ try{
 
     // return res.status(200).send(fileInfos);
     return res.status(200).render("files",{files:fileInfos})
-  } catch(err){
+  } 
+  catch(err){
     return res.status(501).render("error",{error: err})
   }
     
