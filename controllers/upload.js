@@ -14,12 +14,14 @@ const url = dbConfig.url;
 const mongoClient = new MongoClient(url);
 
 const baseUrl = "https://fileuploades.herokuapp.com/files/" // for images link so that we can later see files/:fileName
-
+// const baseUrl = "http://localhost:8080/files/"
 
 
 const uploadFiles =async (req, res)=>{
   try{
+    console.log("loading...")
     await upload(req, res);
+    console.log("loaded")
     console.log(req.files) // upload middleware returns each files new name and all that info
 
     if (req.files.length <= 0) {
@@ -28,9 +30,10 @@ const uploadFiles =async (req, res)=>{
           .send({ message: "You must select at least 1 file." });
       }
   
-      return res.status(200).send({
-        message: "Files have been uploaded.",
-      });
+      // return res.status(200).send({
+      //   message: "Files have been uploaded.",
+      // });
+      res.redirect("/files")
     } catch(err){
         res.render("error",{error:err})
     }
@@ -39,7 +42,7 @@ const uploadFiles =async (req, res)=>{
 
 const getListFiles =async (req, res)=>{
     // get list of files from collection 
-
+try{
     await mongoClient.connect();
 
     const database = mongoClient.db(dbConfig.database);
@@ -61,10 +64,14 @@ const getListFiles =async (req, res)=>{
 
     // return res.status(200).send(fileInfos);
     return res.status(200).render("files",{files:fileInfos})
+  } catch(err){
+    return res.status(501).render("error",{error: err})
+  }
     
 }
 
 const download = async (req, res)=>{
+  try{
     const fileName = req.params.name
     
     await mongoClient.connect();
@@ -75,9 +82,11 @@ const download = async (req, res)=>{
     })
 
     const downloadStream = bucket.openDownloadStreamByName(fileName);
-  
+    const buffer = Buffer.alloc(200,"String",'utf-8')
+    console.log(buffer)
     downloadStream.on("data", function(data){ // readable streams have this much methods/events fire 
         res.write(data);
+        // console.log(data)
     })
     
     downloadStream.on("end", function(){
@@ -87,6 +96,9 @@ const download = async (req, res)=>{
     downloadStream.on("error", function(){
       res.status(500).send({message:"An error occured"})
     })
+  } catch(err){
+    res.status(501).render("error",{error: err})
+  }
 }
 
 module.exports = {uploadFiles: uploadFiles, getListFiles:getListFiles, download:download}
