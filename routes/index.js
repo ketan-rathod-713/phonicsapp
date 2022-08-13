@@ -12,9 +12,15 @@ const User = connection.models.User;
 const authControllers = require('../controllers/auth')
 
 let routes = app => {
-  router.get("/", homeController.signIn);
+  router.get("/",async (req, res, next)=>{
+    
+    await isAuth
+    res.redirect("/uploadImages")
+  });
   // router.post("/signin",homeController.signInPost)
   
+  router.get("/login", homeController.signIn)
+
   router.post('/login',passport.authenticate('local',{failureRedirect: '/login-failure',successRedirect: "/uploadImages"})); // here we don't need callback function to do anything as if false or true we are redirecting to the new route great
 
   router.get('/signup', authControllers.getSignup);

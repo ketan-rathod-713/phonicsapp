@@ -4,6 +4,7 @@ module.exports.isAuth = (req, res, next)=>{
         next()
     }
     else{
-        res.status(401).json({msg:"You are not authorised"})
+        // res.status(401).json({msg:"You are not authorised"})
+        res.redirect("/login")
     }
 }
