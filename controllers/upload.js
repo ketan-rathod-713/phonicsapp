@@ -3,6 +3,8 @@ const upload = require("../middlewares/upload");
 const dbConfig = require("../config/db");
 const { GridFSBucket } = require("mongodb");
 const { default: mongoose } = require("mongoose");
+const e = require("express");
+const { response } = require("express");
 const MongoClient= require("mongodb").MongoClient
 const GridFsBucket = require("mongodb").GridFSBucket
 
@@ -32,7 +34,7 @@ const uploadFiles =async (req, res)=>{
       // return res.status(200).send({
       //   message: "Files have been uploaded.",
       // });
-      res.redirect("/images/")
+      res.redirect("/images")
     } catch(err){
         res.render("error",{error:err})
     }
@@ -55,8 +57,10 @@ try{
 
     let fileInfos = [];
 
-    var baseUrl = req.protocol + '://' + req.get('host') + req.originalUrl + "";
 
+    var baseUrl = req.protocol + '://' + req.get('host') + req.originalUrl + "";
+    baseUrl =  baseUrl.split("?")[0]
+    baseUrl += '/'
     await cursor.forEach((doc) => {
       fileInfos.push({
         name: doc.filename,
@@ -85,30 +89,78 @@ const download = async (req, res)=>{
     })
 
     const downloadStream = bucket.openDownloadStreamByName(fileName);
-  
-    downloadStream.on("data", function(data){ // readable streams have this much methods/events fire 
-        res.write(data);
-    })
-    
-    downloadStream.on("end", function(){
-        res.end()
-    })
 
-    downloadStream.on("error", function(){
-      res.status(500).send({message:"An error occured"})
-    })
+    downloadStream.pipe(res)
+    // res.render("image") , I want to render this ejs page with a image in it and with some static content in it. I want to stream image
   } catch(err){
     res.status(501).render("error",{error: err})
   }
+}
+
+const downloadAll = async (req, res, next)=>{
+
+  await mongoClient.connect()
+
+  const database = mongoClient.db(dbConfig.database)
+  const bucket = new GridFsBucket(database, { // required for important methods like openDownloadStream
+    bucketName:dbConfig.imgBucket
+  })
+
+  const images = database.collection(dbConfig.imgBucket + ".files");
+
+  const cursor = images.find({});
+
+  var imagesInfo = []
+  cursor.forEach(doc=>{
+    imagesInfo.push(doc.filename)
+    const downloadStream = bucket.openDownloadStreamByName(doc.filename)
+    downloadStream.pipe(res)
+  })
+  
+  // ;
+  // res.json({message: "good"})
 }
 
 const getUploadImages = (req, res, next)=>{
   res.render("index")
 }
 
+const deleteImage =async (req, res, next)=>{
+  const user=  req.user  // const objectId = req.params.id
+  const imageName = req.params.name
+
+  if(imageName.search(user.username)==-1 && !user.admin) return res.json({message: "You can't delete other's images "}) // check if user same as the uploader or admin then
+
+  await mongoClient.connect();
+  const database = mongoClient.db(dbConfig.database)
+  const bucket = new GridFsBucket(database, { // required for important methods like openDownloadStream
+    bucketName:dbConfig.imgBucket
+  })
+
+  const images = database.collection(dbConfig.imgBucket + ".files");
+  const cursor = images.find({filename: imageName})
+  var objectId;
+  await cursor.forEach((doc) => {
+     objectId = doc._id
+  });
+
+  bucket.delete(new mongoose.Types.ObjectId(objectId), (err, data)=>{
+    if(err) return res.json({message: err.message})
+    else
+    res.redirect("/images")   // res.json({message: `file with id ${objectId} is successfully deleted`})
+  })
+}
+
+const deleteAllImages = (req, res, next)=>{
+  bucket.drop()
+}
+
+
 module.exports = {
   uploadFiles: uploadFiles, 
   getListFiles: getListFiles, 
   download: download,
   getUploadImages: getUploadImages,
+  deleteImage: deleteImage,
+  downloadAll: downloadAll
 }

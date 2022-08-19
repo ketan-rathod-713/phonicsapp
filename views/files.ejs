@@ -15,16 +15,28 @@
             <button  class="btn btn-primary">LOG OUT</button>
         </form> 
     </div>
+    <div style="display: flex;flex-direction:column;align-items:center;">
     <% files.forEach( file=>{ %>
-
-        <div class="card m-1 bg-primary bg-opacity-75">
-            <div class="card-body">
-                <a href=<%=file.url%> class="text-white"><%= file.name%></a>
-                
+<% let email = file.url.split("-")[2]  %>
+<div style="display:flex;flex-direction:column;align-items:center;background-color:rgba(91, 126, 127, 0.752)">
+        <div class="card mt-3 bg-secondary bg-opacity-75" style="width: 300px;">
+            <div class="card-body" style="display:flex;justify-content:space-between">
+                <a style="text-decoration: none;" href='<%=file.url%>' class="text-white"><%=email%></a>
+                <a href="<%=file.url%>/delete" style="color: white;">Delete</a>
             </div>
           </div>
+
+          <img class="img img-fluid" style="max-height:400px;width:300px;" src="http://localhost:8080/images/<%=file.name%>" alt="">
+
+        </div>
     <% })%>
-   
+</div>
+    <script>
+        console.log("just");
+        fetch('http://localhost:8080/images/1660539955653-by-ketanrtd1@gmail.com-20220402_154449.jpg')
+        .then((res) => console.log(res))
+    
+    </script>
 
 
 

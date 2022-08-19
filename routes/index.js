@@ -34,7 +34,9 @@ let routes = app => {
   // for all this things add isAuth to verify
   router.post("/upload",isAuth, uploadController.uploadFiles);
   router.get("/images", isAuth, uploadController.getListFiles);
-  router.get("/images/:name", isAuth, uploadController.download);
+  router.get("/images/:name", isAuth, uploadController.download); // can i use this image on home page may be
+  router.get("/images/:name/delete", isAuth, uploadController.deleteImage)
+  router.get("/trial",uploadController.downloadAll)
 
 // Visiting this route logs the user out
 app.post('/logout', function(req, res){ // keep it post req. to not accidently log out
