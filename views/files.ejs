@@ -4,38 +4,35 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Images Files</title>
+    <title>uploaded photos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
 
 </head>
 <body class="m-5">
-    <div style="display: flex;justify-content:space-between">
-        <h2 class="text-primary text-center mb-5">List Of Uploaded Images</h2>
+    <div style="display: flex;justify-content:space-between; align-items:center;" class="bg-dark text-white p-4 mb-5">
+        <h2 class="text-center" style="display:flex;align-items: center;justify-content:center;">List Of Uploaded Images</h2>
         <form action="/logout" method="post">
             <button  class="btn btn-primary">LOG OUT</button>
         </form> 
     </div>
-    <div style="display: flex;flex-direction:column;align-items:center;">
+    <div style="display: flex;align-items:center;flex-wrap:wrap;">
     <% files.forEach( file=>{ %>
-<% let email = file.url.split("-")[2]  %>
-<div style="display:flex;flex-direction:column;align-items:center;background-color:rgba(91, 126, 127, 0.752)">
-        <div class="card mt-3 bg-secondary bg-opacity-75" style="width: 300px;">
-            <div class="card-body" style="display:flex;justify-content:space-between">
-                <a style="text-decoration: none;" href='<%=file.url%>' class="text-white"><%=email%></a>
-                <a href="<%=file.url%>/delete" style="color: white;">Delete</a>
+<% let email = file.url.split("-")[2];  %>
+        <div class="card m-2" style="width: 20rem;border:2px solid rgb(121, 121, 124);">
+            <h5 class="card-title card-body"> <%=email%>     </h5>
+            <img src="http://localhost:8080/images/<%=file.name%>" height="300px" class="card-img-top" alt="...">
+            <div class="card-body">
+              <a href="<%=file.url%>" class="btn btn-primary">VIEW</a>
+              <a href="<%=file.url%>/delete" class="btn btn-danger">DELETE</a>
             </div>
-          </div>
+          </div>    
 
-          <img class="img img-fluid" style="max-height:400px;width:300px;" src="http://localhost:8080/images/<%=file.name%>" alt="">
-
-        </div>
     <% })%>
 </div>
     <script>
-        console.log("just");
-        fetch('http://localhost:8080/images/1660539955653-by-ketanrtd1@gmail.com-20220402_154449.jpg')
-        .then((res) => console.log(res))
-    
+        // here i can't get info about images so need to fetch them in json and do it
+        
+    console.log(files)
     </script>
 
 

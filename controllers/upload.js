@@ -70,11 +70,16 @@ try{
 
     // return res.status(200).send(fileInfos);
     return res.status(200).render("files",{files:fileInfos})
+    // return res.status(200).json({images:fileInfos})
   } 
   catch(err){
     return res.status(501).render("error",{error: err})
   }
     
+}
+
+const showImages = (req, res, next)=>{
+  return res.status(200).render("images")
 }
 
 const download = async (req, res)=>{
@@ -129,7 +134,7 @@ const deleteImage =async (req, res, next)=>{
   const user=  req.user  // const objectId = req.params.id
   const imageName = req.params.name
 
-  if(imageName.search(user.username)==-1 && !user.admin) return res.json({message: "You can't delete other's images "}) // check if user same as the uploader or admin then
+  if(imageName.search(user.username)==-1 && !user.admin) return res.render("error",{error:"You are not authenticated to delete this file"}) // check if user same as the uploader or admin then
 
   await mongoClient.connect();
   const database = mongoClient.db(dbConfig.database)
@@ -162,5 +167,6 @@ module.exports = {
   download: download,
   getUploadImages: getUploadImages,
   deleteImage: deleteImage,
-  downloadAll: downloadAll
+  downloadAll: downloadAll,
+  showImages: showImages
 }

@@ -1,1 +1,53 @@
-<!-- images page -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Images</title>
+</head>
+<body>
+    <h1>Trial for auto scrolling</h1>
+
+    <script async="false">
+    
+        window.addEventListener('scroll', () => {
+            const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+            
+            console.log( { scrollTop, scrollHeight, clientHeight });
+            
+            if(clientHeight + scrollTop >= scrollHeight - 5) {
+                // show the loading animation
+                showLoading();
+            }
+        });
+
+        function showLoading() {
+            loading.classList.add('show');
+            console.log("loading..");
+            setTimeout(getPost, 1000)
+        }
+        var images = []
+        getPosts()
+        console.log(images);
+
+        async function getPost(){
+
+        }
+
+        
+
+        async function getPosts(){
+            const imagesFetch =await fetch("http://localhost:8080/images/api")
+            const imagesData =await imagesFetch.json()
+           console.log(imagesData["images"]);
+           imagesData["images"].forEach(img=>{
+            images.push(img)
+           })
+        }
+        console.log(images);
+        
+        
+    </script>
+</body>
+</html>
